@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../public/login.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"
+      integrity="sha512-uMtXmF28A2Ab/JJO2t/vYhlaa/3ahUOgj1Zf27M5rOo8/+fcTUVH0/E0ll68njmjrLqOBjXM3V9NiPFL5ywWPQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <title>login</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
+      <form id="form">
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+
+      <div class="forgot-password-link">
+        <a href="forgetPassword.html" style="color: white; text-decoration: none;">Forget Password?</a>
+      </div>
+
+      <div class="signup-link">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </div>
+      <p id="responseMessage" style="color: red"></p>
+    </div>
+
+    <script>
+      const form = document.querySelector("#form");
+      const Messsage = document.querySelector("#responseMessage");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.querySelector("#email").value;
+        const password = document.querySelector("#password").value;
+
+        const inputs = {
+          email,
+          password,
+        };
+        try {
+          const response = await axios.post(
+            "http://localhost:8080/add/login",
+            inputs
+          );
+          alert(response.data.message);
+          console.log(response);
+          localStorage.setItem("token", response.data.token);
+          Messsage.innerText = response.data;
+          Messsage.style.color = "green";
+
+          // Redirect to a new page after successful login
+          window.location.href = "home.html";
+        } catch (err) {
+          if (err.response && err.response.data) {
+            Messsage.innerText = err.response.data;
+            Messsage.style.color = "red";
+          } else {
+            Messsage.innerText = "error occured please try again later";
+            Messsage.style.color = "red";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
